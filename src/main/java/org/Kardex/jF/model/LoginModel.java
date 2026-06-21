@@ -11,11 +11,10 @@ public class LoginModel {
 
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("=== LOGIN ===");
-        System.out.print("Ingrese usuario: ");
+
         String inputUsuario = sc.nextLine();
 
-        System.out.print("Ingrese contraseña: ");
+
         String inputClave = sc.nextLine();
 
         sc.close();

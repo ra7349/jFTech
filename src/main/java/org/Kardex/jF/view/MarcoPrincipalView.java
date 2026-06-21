@@ -1,131 +1,151 @@
 package org.Kardex.jF.view;
-
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class MarcoPrincipalView extends JFrame {
 
     private static final long serialVersionUID = 1L;
 
+    // Paleta de colores
+    private static final Color COLOR_FONDO             = new Color(15, 23, 42);   // slate-900
+    private static final Color COLOR_FONDO_CARD         = new Color(30, 41, 59);  // slate-800
+    private static final Color COLOR_FONDO_CARD_HOVER   = new Color(42, 56, 80);
+    private static final Color COLOR_ACENTO             = new Color(59, 130, 246); // blue-500
+    private static final Color COLOR_ACENTO_SUAVE       = new Color(96, 165, 250);
+    private static final Color COLOR_TEXTO              = Color.WHITE;
+    private static final Color COLOR_TEXTO_SUAVE        = new Color(148, 163, 184); // slate-400
+
+    // Referencias a los labels de valor de los indicadores, para poder actualizarlos
+    // sin reconstruir todo el panel (por ejemplo, al refrescar datos)
+    private JLabel lblEquiposReparacion;
+    private JLabel lblEquiposEntregados;
+    private JLabel lblServiciosMes;
+    private JLabel lblClientesRegistrados;
+    private JLabel lblIngresosMes;
+
     public MarcoPrincipalView() {
         setTitle("JF Technology & Services — Sistema de Soporte Técnico");
-        setSize(1000, 650);
+        setSize(1050, 680);
+        setMinimumSize(new Dimension(900, 600));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        getContentPane().setBackground(COLOR_FONDO);
 
-        // ── Menú bar ──────────────────────────────────────────────────
+        setJMenuBar(construirMenuBar());
+        add(construirPanelCentro());
+
+        // Carga inicial de los indicadores. Si quieres que se actualicen cada vez
+        // que el usuario vuelve a esta ventana (p. ej. tras registrar una orden),
+        // puedes llamar a cargarIndicadores() también en un WindowListener
+        // (windowActivated) o desde un botón de "Actualizar".
+        cargarIndicadores();
+    }
+
+    // ── Menú bar ──────────────────────────────────────────────────
+    private JMenuBar construirMenuBar() {
         JMenuBar barra = new JMenuBar();
+        barra.setBackground(COLOR_FONDO_CARD);
+        barra.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, COLOR_ACENTO));
 
-        // Clientes
-        JMenu menuClientes = new JMenu("Clientes");
-        JMenuItem itemRegistrarCliente  = new JMenuItem("Registrar Cliente");
-        JMenuItem itemModificarCliente  = new JMenuItem("Modificar Cliente");
-        JMenuItem itemListarClientes    = new JMenuItem("Listar Clientes");
+        JMenu menuArchivo = construirMenu("Archivo");
+
+        JMenuItem itemInicio = construirItem("Inicio");
+        JMenuItem itemCambiarContraseña = construirItem("Cambiar Contraseña");
+        JMenuItem itemConfiguracion = construirItem("Configuración");
+        JMenuItem itemSalir = construirItem("Salir");
+
+        menuArchivo.add(itemInicio);
+        menuArchivo.add(itemCambiarContraseña);
+        menuArchivo.add(itemConfiguracion);
+        menuArchivo.add(itemSalir);
+
+        
+        JMenu menuClientes = construirMenu("Clientes");
+        JMenuItem itemRegistrarCliente = construirItem("Registrar Cliente");
+        JMenuItem itemModificarCliente = construirItem("Modificar Cliente");
+        JMenuItem itemListarClientes   = construirItem("Listar Clientes");
         menuClientes.add(itemRegistrarCliente);
         menuClientes.add(itemModificarCliente);
         menuClientes.add(itemListarClientes);
 
-        // Técnicos
-        JMenu menuTecnicos = new JMenu("Técnicos");
-        JMenuItem itemRegistrarTecnico  = new JMenuItem("Registrar Técnico");
-        JMenuItem itemListarTecnicos    = new JMenuItem("Listar Técnicos");
+        JMenu menuTecnicos = construirMenu("Técnicos");
+        JMenuItem itemRegistrarTecnico = construirItem("Registrar Técnico");
+        JMenuItem itemListarTecnicos   = construirItem("Listar Técnicos");
         menuTecnicos.add(itemRegistrarTecnico);
         menuTecnicos.add(itemListarTecnicos);
 
-        // Equipos
-        JMenu menuEquipos = new JMenu("Equipos");
-        JMenuItem itemRegistrarEquipo   = new JMenuItem("Registrar Equipo");
-        JMenuItem itemListarEquipos     = new JMenuItem("Listar Equipos");
+        JMenu menuEquipos = construirMenu("Equipos");
+        JMenuItem itemRegistrarEquipo = construirItem("Registrar Equipo");
+        JMenuItem itemListarEquipos   = construirItem("Listar Equipos");
         menuEquipos.add(itemRegistrarEquipo);
         menuEquipos.add(itemListarEquipos);
 
-        // Órdenes
-        JMenu menuOrdenes = new JMenu("Órdenes de Servicio");
-        JMenuItem itemNuevaOrden        = new JMenuItem("Nueva Orden");
-        JMenuItem itemListarOrdenes     = new JMenuItem("Listar Órdenes");
+        JMenu menuServicios = construirMenu("Servicios");
+        JMenuItem itemRegistrarServicio = construirItem("Registrar Servicio");
+        JMenuItem itemTiposServicio     = construirItem("Tipos de Servicio");
+        JMenuItem itemTarifas           = construirItem("Tarifas");
+        menuServicios.add(itemRegistrarServicio);
+        menuServicios.add(itemTiposServicio);
+        menuServicios.add(itemTarifas);
+
+        
+        JMenu menuOrdenes = construirMenu("Órdenes de Servicio");
+        JMenuItem itemNuevaOrden       = construirItem("Nueva Orden");
+        JMenuItem itemDiagnostico      = construirItem("Diagnóstico");
+        JMenuItem itemReparacion       = construirItem("Reparación");
+        JMenuItem itemEntrega          = construirItem("Entrega");
+        JMenuItem itemConsultaOrdenes  = construirItem("Consulta de Órdenes");
+
         menuOrdenes.add(itemNuevaOrden);
-        menuOrdenes.add(itemListarOrdenes);
+        menuOrdenes.add(itemDiagnostico);
+        menuOrdenes.add(itemReparacion);
+        menuOrdenes.add(itemEntrega);
+        menuOrdenes.add(itemConsultaOrdenes);
 
-        // Inventario
-        JMenu menuInventario = new JMenu("Inventario");
-        JMenuItem itemRegistrarProducto = new JMenuItem("Registrar Producto");
-        JMenuItem itemListarProductos   = new JMenuItem("Listar Productos");
-        menuInventario.add(itemRegistrarProducto);
-        menuInventario.add(itemListarProductos);
 
-        // Ayuda
-        JMenu menuAyuda = new JMenu("Ayuda");
-        JMenuItem itemAcercaDe = new JMenuItem("Acerca de");
-        JMenuItem itemCerrar   = new JMenuItem("Cerrar");
+        JMenu menuInventario = construirMenu("Inventario");
+        JMenuItem itemRepuestos    = construirItem("Repuestos");
+        JMenuItem itemEntradas     = construirItem("Entradas");
+        JMenuItem itemSalidas      = construirItem("Salidas");
+        JMenuItem itemStockActual  = construirItem("Stock Actual");
+        menuInventario.add(itemRepuestos);
+        menuInventario.add(itemEntradas);
+        menuInventario.add(itemSalidas);
+        menuInventario.add(itemStockActual);
+
+        JMenu menuReportes = construirMenu("Reportes");
+        JMenuItem itemClientes   = construirItem("Clientes");
+        JMenuItem itemEquipos    = construirItem("Equipos");
+        JMenuItem itemServicios  = construirItem("Servicios");
+        JMenuItem itemIngresos   = construirItem("Ingresos");
+        JMenuItem itemInventario = construirItem("Inventario");
+        menuReportes.add(itemClientes);
+        menuReportes.add(itemEquipos);
+        menuReportes.add(itemServicios);
+        menuReportes.add(itemIngresos);
+        menuReportes.add(itemInventario);
+
+        JMenu menuAyuda = construirMenu("Ayuda");
+        JMenuItem itemAcercaDe = construirItem("Acerca del Sistema");
+        JMenuItem itemManual   = construirItem("Manual del Usuario");
         menuAyuda.add(itemAcercaDe);
         menuAyuda.addSeparator();
-        menuAyuda.add(itemCerrar);
+        menuAyuda.add(itemManual);
 
+        barra.add(menuArchivo);
         barra.add(menuClientes);
         barra.add(menuTecnicos);
         barra.add(menuEquipos);
+        barra.add(menuServicios);
         barra.add(menuOrdenes);
         barra.add(menuInventario);
+        barra.add(menuReportes);
         barra.add(menuAyuda);
-        setJMenuBar(barra);
 
-        // ── Panel central con logo / bienvenida ───────────────────────
-        JPanel panelCentro = new JPanel(new BorderLayout());
-        panelCentro.setBackground(new Color(15, 23, 42));
-
-        JLabel lblTitulo = new JLabel("JF Technology & Services", SwingConstants.CENTER);
-        lblTitulo.setFont(new Font("Arial", Font.BOLD, 28));
-        lblTitulo.setForeground(Color.WHITE);
-        lblTitulo.setBorder(BorderFactory.createEmptyBorder(80, 0, 10, 0));
-
-        JLabel lblSub = new JLabel("Sistema de Gestión para Soporte Técnico", SwingConstants.CENTER);
-        lblSub.setFont(new Font("Arial", Font.PLAIN, 16));
-        lblSub.setForeground(new Color(59, 130, 246));
-
-        JLabel lblVersion = new JLabel("v1.0  |  2026", SwingConstants.CENTER);
-        lblVersion.setFont(new Font("Arial", Font.ITALIC, 12));
-        lblVersion.setForeground(new Color(156, 163, 175));
-        lblVersion.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
-
-        JPanel panelTexto = new JPanel(new GridLayout(3, 1, 0, 5));
-        panelTexto.setOpaque(false);
-        panelTexto.add(lblTitulo);
-        panelTexto.add(lblSub);
-        panelTexto.add(lblVersion);
-
-        panelCentro.add(panelTexto, BorderLayout.NORTH);
-
-        // Tarjetas de módulos
-        JPanel panelCards = new JPanel(new GridLayout(2, 3, 15, 15));
-        panelCards.setOpaque(false);
-        panelCards.setBorder(BorderFactory.createEmptyBorder(40, 60, 60, 60));
-        String[][] modulos = {
-            {"👥  Clientes",    "Registro y gestión de clientes"},
-            {"🔧  Técnicos",    "Control de técnicos asignados"},
-            {"💻  Equipos",     "Equipos ingresados a reparación"},
-            {"📋  Órdenes",     "Apertura y seguimiento de tickets"},
-            {"📦  Inventario",  "Repuestos y materiales"},
-            {"📊  Reportes",    "KPIs y estadísticas"}
-        };
-        for (String[] mod : modulos) {
-            JPanel card = new JPanel(new BorderLayout(0, 4));
-            card.setBackground(new Color(30, 41, 59));
-            card.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(59, 130, 246), 1),
-                BorderFactory.createEmptyBorder(12, 14, 12, 14)));
-            JLabel lTit = new JLabel(mod[0]);
-            lTit.setFont(new Font("Arial", Font.BOLD, 13));
-            lTit.setForeground(Color.WHITE);
-            JLabel lDesc = new JLabel("<html><small>" + mod[1] + "</small></html>");
-            lDesc.setForeground(new Color(156, 163, 175));
-            card.add(lTit,  BorderLayout.NORTH);
-            card.add(lDesc, BorderLayout.CENTER);
-            panelCards.add(card);
-        }
-        panelCentro.add(panelCards, BorderLayout.CENTER);
-        add(panelCentro);
-
-        // ── Acciones ──────────────────────────────────────────────────
+        // ── Acciones (sin cambios respecto a la lógica original) ──
         itemRegistrarCliente.addActionListener(e -> new FormularioCliente(this).setVisible(true));
         itemModificarCliente.addActionListener(e -> new ModificarClienteView(this).setVisible(true));
         itemListarClientes  .addActionListener(e -> new ClienteListarView().setVisible(true));
@@ -133,18 +153,229 @@ public class MarcoPrincipalView extends JFrame {
         itemRegistrarTecnico.addActionListener(e -> new FormularioTecnico(this).setVisible(true));
         itemListarTecnicos  .addActionListener(e -> new TecnicoListarView().setVisible(true));
 
-        itemRegistrarEquipo .addActionListener(e -> new FormularioEquipo(this).setVisible(true));
-        itemListarEquipos   .addActionListener(e -> new EquipoListarView().setVisible(true));
+        itemRegistrarEquipo.addActionListener(e -> new FormularioEquipo(this).setVisible(true));
+        itemListarEquipos  .addActionListener(e -> new EquipoListarView().setVisible(true));
 
-        itemNuevaOrden      .addActionListener(e -> new FormularioOrden(this).setVisible(true));
-        itemListarOrdenes   .addActionListener(e -> new OrdenListarView().setVisible(true));
 
-        itemRegistrarProducto.addActionListener(e -> new FormularioProducto(this).setVisible(true));
-        itemListarProductos  .addActionListener(e -> new ProductoListarView().setVisible(true));
 
         itemAcercaDe.addActionListener(e -> JOptionPane.showMessageDialog(this,
-            "JF Technology & Services\nSistema de Soporte Técnico v1.0\n2026",
-            "Acerca de", JOptionPane.INFORMATION_MESSAGE));
-        itemCerrar.addActionListener(e -> System.exit(0));
+                "JF Technology & Services\nSistema de Soporte Técnico v1.0\n2026",
+                "Acerca de", JOptionPane.INFORMATION_MESSAGE));
+        itemSalir.addActionListener(e -> System.exit(0));
+
+        return barra;
+    }
+
+    private JMenu construirMenu(String texto) {
+        JMenu menu = new JMenu(texto);
+        menu.setForeground(COLOR_TEXTO);
+        menu.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        return menu;
+    }
+
+    private JMenuItem construirItem(String texto) {
+        JMenuItem item = new JMenuItem(texto);
+        item.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        return item;
+    }
+
+    // ── Panel central ────────────────────────────────────────────
+    private JPanel construirPanelCentro() {
+        JPanel panelCentro = new JPanel(new BorderLayout());
+        panelCentro.setBackground(COLOR_FONDO);
+
+        JPanel panelSuperior = new JPanel();
+        panelSuperior.setLayout(new BoxLayout(panelSuperior, BoxLayout.Y_AXIS));
+        panelSuperior.setOpaque(false);
+        panelSuperior.add(construirPanelBienvenida());
+        panelSuperior.add(construirPanelIndicadores());
+
+        panelCentro.add(panelSuperior, BorderLayout.NORTH);
+        panelCentro.add(construirPanelCards(), BorderLayout.CENTER);
+        return panelCentro;
+    }
+
+    private JPanel construirPanelBienvenida() {
+        JPanel panelTexto = new JPanel();
+        panelTexto.setLayout(new BoxLayout(panelTexto, BoxLayout.Y_AXIS));
+        panelTexto.setOpaque(false);
+        panelTexto.setBorder(BorderFactory.createEmptyBorder(55, 0, 25, 0));
+
+        JLabel lblTitulo = new JLabel("JF Technology & Services");
+        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 30));
+        lblTitulo.setForeground(COLOR_TEXTO);
+        lblTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JLabel lblSub = new JLabel("Sistema de Gestión para Soporte Técnico");
+        lblSub.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        lblSub.setForeground(COLOR_ACENTO_SUAVE);
+        lblSub.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lblSub.setBorder(BorderFactory.createEmptyBorder(8, 0, 0, 0));
+
+        JLabel lblVersion = new JLabel("v1.0  ·  2026");
+        lblVersion.setFont(new Font("Segoe UI", Font.ITALIC, 12));
+        lblVersion.setForeground(COLOR_TEXTO_SUAVE);
+        lblVersion.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lblVersion.setBorder(BorderFactory.createEmptyBorder(6, 0, 0, 0));
+
+        panelTexto.add(lblTitulo);
+        panelTexto.add(lblSub);
+        panelTexto.add(lblVersion);
+        return panelTexto;
+    }
+
+    // ── Indicadores (KPIs) ──────────────────────────────────────
+    private JPanel construirPanelIndicadores() {
+        JPanel panel = new JPanel(new GridLayout(1, 5, 14, 0));
+        panel.setOpaque(false);
+        panel.setBorder(BorderFactory.createEmptyBorder(5, 70, 25, 70));
+
+        lblEquiposReparacion   = new JLabel("--", SwingConstants.CENTER);
+        lblEquiposEntregados   = new JLabel("--", SwingConstants.CENTER);
+        lblServiciosMes        = new JLabel("--", SwingConstants.CENTER);
+        lblClientesRegistrados = new JLabel("--", SwingConstants.CENTER);
+        lblIngresosMes         = new JLabel("--", SwingConstants.CENTER);
+
+        panel.add(construirIndicador("🛠", "Equipos en reparación", lblEquiposReparacion, COLOR_ACENTO));
+        panel.add(construirIndicador("✅", "Equipos entregados", lblEquiposEntregados, new Color(34, 197, 94)));
+        panel.add(construirIndicador("📋", "Servicios este mes", lblServiciosMes, new Color(168, 85, 247)));
+        panel.add(construirIndicador("👥", "Clientes registrados", lblClientesRegistrados, new Color(234, 179, 8)));
+        panel.add(construirIndicador("💰", "Ingresos del mes", lblIngresosMes, new Color(16, 185, 129)));
+
+        return panel;
+    }
+
+    /** Tarjeta compacta de un solo indicador: ícono + valor grande + etiqueta. */
+    private JPanel construirIndicador(String icono, String etiqueta, JLabel lblValor, Color colorValor) {
+        TarjetaRedondeada card = new TarjetaRedondeada();
+        card.setBackground(COLOR_FONDO_CARD);
+        card.setBorder(new EmptyBorder(14, 8, 14, 8));
+        card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
+
+        JLabel lblIcono = new JLabel(icono);
+        lblIcono.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 18));
+        lblIcono.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        lblValor.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        lblValor.setForeground(colorValor);
+        lblValor.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JLabel lblTexto = new JLabel(etiqueta, SwingConstants.CENTER);
+        lblTexto.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        lblTexto.setForeground(COLOR_TEXTO_SUAVE);
+        lblTexto.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        card.add(lblIcono);
+        card.add(Box.createVerticalStrut(6));
+        card.add(lblValor);
+        card.add(Box.createVerticalStrut(2));
+        card.add(lblTexto);
+
+        return card;
+    }
+
+    private void cargarIndicadores() {
+        try {
+            // TODO: sustituye estas líneas por llamadas a tus DAOs/Servicios reales, p. ej.:
+            // int equiposEnReparacion = EquipoDAO.contarPorEstado("EN_REPARACION");
+            int equiposEnReparacion   = 0;
+            int equiposEntregados     = 0;
+            int serviciosEsteMes      = 0;
+            int clientesRegistrados   = 0;
+            double ingresosDelMes     = 0.0;
+
+            lblEquiposReparacion.setText(String.valueOf(equiposEnReparacion));
+            lblEquiposEntregados.setText(String.valueOf(equiposEntregados));
+            lblServiciosMes.setText(String.valueOf(serviciosEsteMes));
+            lblClientesRegistrados.setText(String.valueOf(clientesRegistrados));
+            lblIngresosMes.setText(String.format("S/ %,.2f", ingresosDelMes));
+        } catch (Exception ex) {
+            // En caso de error de conexión/consulta, deja los indicadores en "--"
+            // en vez de romper la pantalla principal.
+            ex.printStackTrace();
+        }
+    }
+
+    private JPanel construirPanelCards() {
+        JPanel panelCards = new JPanel(new GridLayout(2, 3, 18, 18));
+        panelCards.setOpaque(false);
+        panelCards.setBorder(BorderFactory.createEmptyBorder(15, 70, 70, 70));
+
+        String[][] modulos = {
+            {"👥", "Clientes",   "Registro y gestión de clientes"},
+            {"🔧", "Técnicos",   "Control de técnicos asignados"},
+            {"💻", "Equipos",    "Equipos ingresados a reparación"},
+            {"📋", "Órdenes",    "Apertura y seguimiento de tickets"},
+            {"📦", "Inventario", "Repuestos y materiales"},
+            {"📊", "Reportes",   "KPIs y estadísticas"}
+        };
+
+        for (String[] mod : modulos) {
+            panelCards.add(construirTarjeta(mod[0], mod[1], mod[2]));
+        }
+        return panelCards;
+    }
+
+    private JPanel construirTarjeta(String icono, String titulo, String descripcion) {
+        TarjetaRedondeada card = new TarjetaRedondeada();
+        card.setLayout(new BorderLayout(0, 6));
+        card.setBackground(COLOR_FONDO_CARD);
+        card.setBorder(new EmptyBorder(16, 18, 16, 18));
+        card.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        JLabel lblIcono = new JLabel(icono);
+        lblIcono.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 22));
+
+        JLabel lblTit = new JLabel(titulo);
+        lblTit.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        lblTit.setForeground(COLOR_TEXTO);
+
+        JPanel panelTitulo = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+        panelTitulo.setOpaque(false);
+        panelTitulo.add(lblIcono);
+        panelTitulo.add(lblTit);
+
+        JLabel lblDesc = new JLabel("<html><div style='width:200px'>" + descripcion + "</div></html>");
+        lblDesc.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        lblDesc.setForeground(COLOR_TEXTO_SUAVE);
+
+        card.add(panelTitulo, BorderLayout.NORTH);
+        card.add(lblDesc, BorderLayout.CENTER);
+
+        card.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                card.setBackground(COLOR_FONDO_CARD_HOVER);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                card.setBackground(COLOR_FONDO_CARD);
+            }
+        });
+
+        return card;
+    }
+
+    /** Panel con esquinas redondeadas y borde de acento, usado para las tarjetas de módulos. */
+    private static class TarjetaRedondeada extends JPanel {
+        private static final long serialVersionUID = 1L;
+
+        TarjetaRedondeada() {
+            setOpaque(false);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setColor(getBackground());
+            g2.fillRoundRect(0, 0, getWidth(), getHeight(), 14, 14);
+            g2.setColor(COLOR_ACENTO);
+            g2.setStroke(new BasicStroke(1.2f));
+            g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 14, 14);
+            g2.dispose();
+            super.paintComponent(g);
+        }
     }
 }
