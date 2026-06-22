@@ -10,16 +10,13 @@ public class MarcoPrincipalView extends JFrame {
     private static final long serialVersionUID = 1L;
 
     // Paleta de colores
-    private static final Color COLOR_FONDO             = new Color(15, 23, 42);   // slate-900
-    private static final Color COLOR_FONDO_CARD         = new Color(30, 41, 59);  // slate-800
+    private static final Color COLOR_FONDO             = new Color(15, 23, 42);
+    private static final Color COLOR_FONDO_CARD         = new Color(30, 41, 59); 
     private static final Color COLOR_FONDO_CARD_HOVER   = new Color(42, 56, 80);
-    private static final Color COLOR_ACENTO             = new Color(59, 130, 246); // blue-500
+    private static final Color COLOR_ACENTO             = new Color(59, 130, 246); 
     private static final Color COLOR_ACENTO_SUAVE       = new Color(96, 165, 250);
     private static final Color COLOR_TEXTO              = Color.WHITE;
-    private static final Color COLOR_TEXTO_SUAVE        = new Color(148, 163, 184); // slate-400
-
-    // Referencias a los labels de valor de los indicadores, para poder actualizarlos
-    // sin reconstruir todo el panel (por ejemplo, al refrescar datos)
+    private static final Color COLOR_TEXTO_SUAVE        = new Color(148, 163, 184); 
     private JLabel lblEquiposReparacion;
     private JLabel lblEquiposEntregados;
     private JLabel lblServiciosMes;
@@ -37,10 +34,6 @@ public class MarcoPrincipalView extends JFrame {
         setJMenuBar(construirMenuBar());
         add(construirPanelCentro());
 
-        // Carga inicial de los indicadores. Si quieres que se actualicen cada vez
-        // que el usuario vuelve a esta ventana (p. ej. tras registrar una orden),
-        // puedes llamar a cargarIndicadores() también en un WindowListener
-        // (windowActivated) o desde un botón de "Actualizar".
         cargarIndicadores();
     }
 
@@ -84,13 +77,8 @@ public class MarcoPrincipalView extends JFrame {
         menuEquipos.add(itemListarEquipos);
 
         JMenu menuServicios = construirMenu("Servicios");
-        JMenuItem itemRegistrarServicio = construirItem("Registrar Servicio");
-        JMenuItem itemTiposServicio     = construirItem("Tipos de Servicio");
-        JMenuItem itemTarifas           = construirItem("Tarifas");
-        menuServicios.add(itemRegistrarServicio);
-        menuServicios.add(itemTiposServicio);
-        menuServicios.add(itemTarifas);
-
+        JMenuItem itemGestionarServicio = construirItem("GestionarServicio");
+        menuServicios.add(itemGestionarServicio);
         
         JMenu menuOrdenes = construirMenu("Órdenes de Servicio");
         JMenuItem itemNuevaOrden       = construirItem("Nueva Orden");
@@ -98,7 +86,6 @@ public class MarcoPrincipalView extends JFrame {
         JMenuItem itemReparacion       = construirItem("Reparación");
         JMenuItem itemEntrega          = construirItem("Entrega");
         JMenuItem itemConsultaOrdenes  = construirItem("Consulta de Órdenes");
-
         menuOrdenes.add(itemNuevaOrden);
         menuOrdenes.add(itemDiagnostico);
         menuOrdenes.add(itemReparacion);
@@ -108,25 +95,14 @@ public class MarcoPrincipalView extends JFrame {
 
         JMenu menuInventario = construirMenu("Inventario");
         JMenuItem itemRepuestos    = construirItem("Repuestos");
-        JMenuItem itemEntradas     = construirItem("Entradas");
-        JMenuItem itemSalidas      = construirItem("Salidas");
-        JMenuItem itemStockActual  = construirItem("Stock Actual");
+        JMenuItem itemMovimiento     = construirItem("Movimientos");
         menuInventario.add(itemRepuestos);
-        menuInventario.add(itemEntradas);
-        menuInventario.add(itemSalidas);
-        menuInventario.add(itemStockActual);
+        menuInventario.add(itemMovimiento);
 
         JMenu menuReportes = construirMenu("Reportes");
-        JMenuItem itemClientes   = construirItem("Clientes");
-        JMenuItem itemEquipos    = construirItem("Equipos");
-        JMenuItem itemServicios  = construirItem("Servicios");
-        JMenuItem itemIngresos   = construirItem("Ingresos");
-        JMenuItem itemInventario = construirItem("Inventario");
-        menuReportes.add(itemClientes);
-        menuReportes.add(itemEquipos);
-        menuReportes.add(itemServicios);
-        menuReportes.add(itemIngresos);
-        menuReportes.add(itemInventario);
+        JMenuItem itemGenerarRportes   = construirItem("Generar Reportes");
+        menuReportes.add(itemGenerarRportes);
+      
 
         JMenu menuAyuda = construirMenu("Ayuda");
         JMenuItem itemAcercaDe = construirItem("Acerca del Sistema");
@@ -156,8 +132,20 @@ public class MarcoPrincipalView extends JFrame {
         itemRegistrarEquipo.addActionListener(e -> new FormularioEquipo(this).setVisible(true));
         itemListarEquipos  .addActionListener(e -> new EquipoListarView().setVisible(true));
 
+        itemCambiarContraseña.addActionListener(e -> new ActualizarcontraseñaView().setVisible(true));
+        itemGestionarServicio.addActionListener(e -> new GestionServicioView().setVisible(true));
 
-
+        itemNuevaOrden.addActionListener(e -> new NuevaOrdenView().setVisible(true));
+        itemDiagnostico.addActionListener(e -> new DiagnosticoView().setVisible(true));
+        itemReparacion.addActionListener(e -> new ReparacionView().setVisible(true));
+        itemEntrega.addActionListener(e -> new EntregaView().setVisible(true));
+        itemConsultaOrdenes.addActionListener(e -> new ConsultaView().setVisible(true));
+        
+        itemRepuestos.addActionListener(e -> new RepuestosView().setVisible(true));
+        itemMovimiento.addActionListener(e -> new MovimientosView().setVisible(true));
+        
+        itemGenerarRportes.addActionListener(e -> new ReporteView().setVisible(true));
+        
         itemAcercaDe.addActionListener(e -> JOptionPane.showMessageDialog(this,
                 "JF Technology & Services\nSistema de Soporte Técnico v1.0\n2026",
                 "Acerca de", JOptionPane.INFORMATION_MESSAGE));

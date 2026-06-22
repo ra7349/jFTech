@@ -46,7 +46,7 @@ public class ModificarClienteView extends JDialog {
         p.add(new JLabel("Teléfono:")); p.add(txtTelefono);
         p.add(new JLabel("Correo:")); p.add(txtCorreo);
         p.add(new JLabel("Dirección:")); p.add(txtDireccion);
-        p.add(new JLabel("RUC:")); p.add(txtRuc);
+        p.add(new JLabel("RUC/DNI:")); p.add(txtRuc);
         p.add(new JLabel("Tipo:")); p.add(cbTipo);
         return p;
     }

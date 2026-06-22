@@ -1,6 +1,7 @@
 package org.Kardex.jF.model;
 
 import java.sql.*;
+
 import java.util.*;
 import org.Kardex.jF.bean.entity.Cliente;
 import org.Kardex.jF.persistence.ConexionRepository;
@@ -15,7 +16,7 @@ public class ClienteModel implements CRUDUsecase<Cliente> {
             VALUES (?,?,?,?,?,?,?,?)
             """;
         try (Connection cn = ConexionRepository.getConexion();
-             PreparedStatement ps = cn.prepareStatement(sql)) {
+                PreparedStatement ps = cn.prepareStatement(sql)) {
             ps.setString(1, c.getCodigo());
             ps.setString(2, c.getNombre());
             ps.setString(3, c.getApellido());

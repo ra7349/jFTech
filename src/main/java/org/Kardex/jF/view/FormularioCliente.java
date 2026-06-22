@@ -33,13 +33,13 @@ public class FormularioCliente extends JDialog {
         JPanel p = new JPanel(new GridLayout(8, 2, 10, 8));
         p.setBorder(BorderFactory.createEmptyBorder(15, 15, 10, 15));
         p.add(new JLabel("Código *:")); p.add(txtCodigo);
+        p.add(new JLabel("Tipo:")); p.add(cbTipo);
+        p.add(new JLabel("RUC/DNI:")); p.add(txtRuc);
         p.add(new JLabel("Nombres *:")); p.add(txtNombre);
         p.add(new JLabel("Apellidos *:")); p.add(txtApellido);
         p.add(new JLabel("Teléfono:")); p.add(txtTelefono);
         p.add(new JLabel("Correo:")); p.add(txtCorreo);
         p.add(new JLabel("Dirección:")); p.add(txtDireccion);
-        p.add(new JLabel("RUC:")); p.add(txtRuc);
-        p.add(new JLabel("Tipo:")); p.add(cbTipo);
         return p;
     }
 

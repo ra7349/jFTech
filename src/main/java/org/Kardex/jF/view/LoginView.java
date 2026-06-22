@@ -6,9 +6,13 @@ import java.awt.GridBagLayout;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+
+import org.Kardex.jF.bean.entity.Usuario;
+import org.Kardex.jF.model.UsuarioModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 
 public class LoginView extends JFrame {
 	 
@@ -22,7 +26,7 @@ public class LoginView extends JFrame {
     private static final Color COLOR_BORDE = new Color(206, 212, 218);
  
     private JTextField userField;
-    private JPasswordField passField;
+    private JTextField passField;
  
     public LoginView() {
         setTitle("Iniciar Sesión");
@@ -140,16 +144,28 @@ public class LoginView extends JFrame {
     }
 
     private void validarCredenciales() {
-        String inputUsuario = userField.getText().trim();
-        String inputClave = new String(passField.getPassword());
+    	
+        String usuario = userField.getText();
+        String contraseña =
+                String.valueOf(passField.getText());
 
-        if (inputUsuario.equals("admin") && inputClave.equals("1234")) {
-            JOptionPane.showMessageDialog(this, "Bienvenido al sistema");
-            new MarcoPrincipalView().setVisible(true);
+        UsuarioModel dao = new UsuarioModel();
+
+        Usuario u =
+                dao.verificarContraseña(usuario, contraseña);
+
+        if (u != null) {
+
+            MarcoPrincipalView frm = new MarcoPrincipalView();
+            frm.setVisible(true);
+
             dispose();
+
         } else {
-            JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos", "Error", JOptionPane.ERROR_MESSAGE);
-            passField.setText("");
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Usuario o contraseña incorrectos");
         }
-    }
+}
 }
