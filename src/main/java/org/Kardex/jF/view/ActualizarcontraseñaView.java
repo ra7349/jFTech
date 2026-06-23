@@ -40,6 +40,7 @@ public class ActualizarcontraseñaView extends JFrame {
         add(btnGuardar);
         add(btnCancelar);
  
+        UiStyle.applyTo(this);
         setLocationRelativeTo(null);
         setVisible(true);
  

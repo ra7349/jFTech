@@ -68,6 +68,7 @@ public class GenerarBoletaView extends JFrame {
         panel.add(crearPanelInferior(), BorderLayout.SOUTH);
 
         add(panel, BorderLayout.CENTER);
+        UiStyle.applyTo(this);
         setLocationRelativeTo(null);
         cargarClientes();
         cargarRepuestos();

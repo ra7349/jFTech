@@ -128,7 +128,8 @@ public class NuevaOrdenView extends JFrame {
 		btnActualizarEstado.addActionListener(e -> actualizarEstadoSeleccionado());
 		btnGuardar.addActionListener(e -> agregarOrdenATabla());
 		add(panelPrincipal);
-		setLocationRelativeTo(null);
+		UiStyle.applyTo(this);
+	        setLocationRelativeTo(null);
 		setVisible(true);
 	}
 

@@ -39,6 +39,8 @@ public class OrdenListarView extends JFrame {
         add(panelBotones, BorderLayout.SOUTH);
 
         btnRefrescar    .addActionListener(e -> cargarDatos());
+        UiStyle.applyTo(this);
+
         btnCambiarEstado.addActionListener(e -> cambiarEstado());
         btnEliminar     .addActionListener(e -> eliminar());
         cargarDatos();

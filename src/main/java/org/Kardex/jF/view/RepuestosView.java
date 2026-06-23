@@ -88,6 +88,7 @@ public class RepuestosView extends JFrame {
         registrarEventos();
         cargarDatos();
         limpiarFormulario();
+        UiStyle.applyTo(this);
         setLocationRelativeTo(null);
     }
 

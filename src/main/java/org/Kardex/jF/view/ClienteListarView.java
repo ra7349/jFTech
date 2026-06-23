@@ -38,6 +38,8 @@ public class ClienteListarView extends JFrame {
         panelBotones.add(btnEliminar);
         add(panelBotones, BorderLayout.SOUTH);
 
+        UiStyle.applyTo(this);
+
         btnEliminar .addActionListener(e -> eliminar());
         btnActualizar.addActionListener(e -> cargarDatos());
         cargarDatos();

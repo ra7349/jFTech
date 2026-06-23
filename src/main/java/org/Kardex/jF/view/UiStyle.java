@@ -57,9 +57,70 @@ final class UiStyle {
     static void styleTextArea(JTextArea area) {
         area.setFont(area.getFont().deriveFont(13f));
         area.setForeground(TEXT);
+        area.setBackground(Color.WHITE);
         area.setLineWrap(true);
         area.setWrapStyleWord(true);
-        area.setBorder(BorderFactory.createEmptyBorder(7, 10, 7, 10));
+        area.setBorder(new CompoundBorder(
+            new LineBorder(BORDER, 1, true),
+            BorderFactory.createEmptyBorder(7, 10, 7, 10)
+        ));
+    }
+
+    static void applyTo(Window window) {
+        if (window instanceof JFrame frame) {
+            frame.getContentPane().setBackground(BACKGROUND);
+            styleComponentTree(frame.getContentPane());
+        } else if (window instanceof JDialog dialog) {
+            dialog.getContentPane().setBackground(BACKGROUND);
+            styleComponentTree(dialog.getContentPane());
+        } else {
+            styleComponentTree(window);
+        }
+    }
+
+    private static void styleComponentTree(Component component) {
+        if (component instanceof JPanel panel) {
+            if (panel.getBackground() == null || panel.getBackground().equals(UIManager.getColor("Panel.background"))) {
+                panel.setBackground(BACKGROUND);
+            }
+        } else if (component instanceof JLabel label) {
+            label.setForeground(TEXT);
+            label.setFont(label.getFont().deriveFont(Font.BOLD, 13f));
+        } else if (component instanceof JTextField field) {
+            styleField(field);
+        } else if (component instanceof JComboBox<?> combo) {
+            styleCombo(combo);
+        } else if (component instanceof JTextArea area) {
+            styleTextArea(area);
+        } else if (component instanceof JTable table) {
+            styleTable(table);
+        } else if (component instanceof JButton button && button.getClientProperty("uiStyle.variant") == null) {
+            styleDefaultButton(button);
+        }
+
+        if (component instanceof JScrollPane scrollPane) {
+            scrollPane.getViewport().setBackground(CARD);
+            scrollPane.setBorder(new LineBorder(BORDER, 1, true));
+        }
+
+        if (component instanceof Container container) {
+            for (Component child : container.getComponents()) {
+                styleComponentTree(child);
+            }
+        }
+    }
+
+    private static void styleDefaultButton(JButton button) {
+        button.putClientProperty("uiStyle.variant", "default");
+        button.setFocusPainted(false);
+        button.setBackground(Color.WHITE);
+        button.setForeground(PRIMARY_DARK);
+        button.setFont(button.getFont().deriveFont(Font.BOLD, 13f));
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        button.setBorder(new CompoundBorder(
+            new LineBorder(new Color(147, 197, 253), 1, true),
+            BorderFactory.createEmptyBorder(8, 16, 8, 16)
+        ));
     }
 
     static JButton primaryButton(String text) {
@@ -100,6 +161,7 @@ final class UiStyle {
 
     private static JButton button(String text, Color background) {
         JButton button = new JButton(text);
+        button.putClientProperty("uiStyle.variant", "accent");
         button.setFocusPainted(false);
         button.setBackground(background);
         button.setFont(button.getFont().deriveFont(Font.BOLD, 13f));

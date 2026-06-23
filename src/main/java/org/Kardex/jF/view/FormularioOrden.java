@@ -49,6 +49,7 @@ public class FormularioOrden extends JDialog {
 
         add(crearPanel(), BorderLayout.CENTER);
         add(crearBotones(), BorderLayout.SOUTH);
+        UiStyle.applyTo(this);
     }
 
     private JPanel crearPanel() {
