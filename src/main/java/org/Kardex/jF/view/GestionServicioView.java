@@ -45,7 +45,7 @@ public class GestionServicioView extends JFrame{
 	        setTitle("Gestión de Servicios");
 	        setSize(760, 620);
 	        setMinimumSize(new Dimension(700, 560));
-	        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	        setLayout(new BorderLayout());
 	        getContentPane().setBackground(COLOR_FONDO);
 	 
