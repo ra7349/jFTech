@@ -16,7 +16,6 @@ public class FormularioOrden extends JDialog {
 
     private JTextField txtCodigo         = new JTextField();
     private JTextArea  txtFalla          = new JTextArea(3, 20);
-    private JTextArea  txtDiagnostico    = new JTextArea(3, 20);
     private JTextField txtCostoEstimado  = new JTextField("0.00");
     private JComboBox<String> cbEstado   = new JComboBox<>(new String[]{
         "RECIBIDO","EN_DIAGNOSTICO","EN_REPARACION","ESPERANDO_REPUESTO","LISTO","ENTREGADO","CANCELADO"});
@@ -72,11 +71,6 @@ public class FormularioOrden extends JDialog {
         p.add(new JScrollPane(txtFalla), g);
         row++;
 
-        g.gridx = 0; g.gridy = row; g.weightx = 0.3;
-        p.add(new JLabel("Diagnóstico:"), g);
-        g.gridx = 1; g.weightx = 0.7;
-        p.add(new JScrollPane(txtDiagnostico), g);
-
         return p;
     }
 
@@ -116,7 +110,7 @@ public class FormularioOrden extends JDialog {
         }
         o.setEstado((String) cbEstado.getSelectedItem());
         o.setDescripcionFalla(txtFalla.getText().trim());
-        o.setDiagnostico(txtDiagnostico.getText().trim());
+        o.setDiagnostico("");
         try {
             o.setCostoEstimado(Double.parseDouble(txtCostoEstimado.getText().trim()));
         } catch (NumberFormatException ex) { o.setCostoEstimado(0); }
@@ -131,7 +125,7 @@ public class FormularioOrden extends JDialog {
     }
 
     private void limpiar() {
-        txtCodigo.setText(""); txtFalla.setText(""); txtDiagnostico.setText("");
+        txtCodigo.setText(""); txtFalla.setText("");
         txtCostoEstimado.setText("0.00"); cbEstado.setSelectedIndex(0);
         if (cbEquipo.getItemCount()  > 0) cbEquipo.setSelectedIndex(0);
         if (cbTecnico.getItemCount() > 0) cbTecnico.setSelectedIndex(0);

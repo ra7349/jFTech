@@ -7,32 +7,32 @@ import javax.swing.table.DefaultTableModel;
 
 import org.Kardex.jF.bean.entity.Cliente;
 import org.Kardex.jF.bean.entity.Equipo;
+import org.Kardex.jF.bean.entity.Servicio;
 import org.Kardex.jF.model.ClienteModel;
 import org.Kardex.jF.model.EquipoModel;
+import org.Kardex.jF.model.ServiciosModel;
 
 public class NuevaOrdenView extends JFrame {
-	
+
 	private static final long serialVersionUID = 1L;
-    
-	private JComboBox<Cliente> comboCliente = new JComboBox<>(); 
+
+	private JComboBox<Cliente> comboCliente = new JComboBox<>();
     private JTextField campoNumOrden       = new JTextField("OS001");
     private JTextField campoEquipo         = new JTextField("");
     private JTextField campoFalla          = new JTextField();
-    private JComboBox<String> comboEstado  = new JComboBox<>(new String[]{"Recibido", "Diagnostico", "Reparacion", "Listo", "Entregado"});
-    
-    // ✅ CORRECCIÓN 1: Cambiados a 'private' para mantener la encapsulación
-    private JTextField campoDiagnostico    = new JTextField();
-    private JTextField campoServicios      = new JTextField();
-    
+    private JComboBox<Servicio> comboServicios = new JComboBox<>();
+    private JComboBox<String> comboEstado  = new JComboBox<>(new String[]{"Recibido", "Reparacion", "Listo", "Entregado"});
+
     private JButton btnGuardar             = new JButton("Guardar");
     private JButton btnActualizarEstado    = new JButton("Actualizar Estado");
-    
+
     // ✅ MEJORA 2: Usar DefaultTableModel para poder agregar/eliminar filas dinámicamente
     private DefaultTableModel modelo;
     private JTable tabla;
-    
-    private ClienteModel dao = new ClienteModel(); 
-    
+
+    private ClienteModel dao = new ClienteModel();
+    private ServiciosModel serviciosDao = new ServiciosModel();
+
 	public NuevaOrdenView() {
 		setTitle("Gestión de Órdenes");
 		setSize(800, 550); // ✅ MEJORA 3: Más ancho para que quepa la tabla al lado o abajo
@@ -47,47 +47,45 @@ public class NuevaOrdenView extends JFrame {
 		panelPrincipal.add(titulo, BorderLayout.NORTH);
 
 		// ── PANEL IZQUIERDO: FORMULARIO ─────────────────────────────────
-		// 7 filas, 2 columnas. Ahora sí sumamos 14 elementos exactos.
-		JPanel panelForm = new JPanel(new GridLayout(7, 2, 10, 15)); 
+		// 6 filas, 2 columnas: se eliminó diagnóstico y servicios ahora se elige desde catálogo.
+		JPanel panelForm = new JPanel(new GridLayout(6, 2, 10, 15));
 		panelForm.setPreferredSize(new Dimension(350, 0)); // Fijamos un ancho cómodo para el formulario
 
 		panelForm.add(new JLabel("N° Orden:"));
 		campoNumOrden.setEditable(false); // ✅ MEJORA 4: El número de orden no debería ser editable manualmente
-		panelForm.add(campoNumOrden);          
+		panelForm.add(campoNumOrden);
 
 		panelForm.add(new JLabel("Cliente:"));
-		panelForm.add(comboCliente);           
+		panelForm.add(comboCliente);
 
 		panelForm.add(new JLabel("Equipo:"));
-		panelForm.add(campoEquipo);            
+		campoEquipo.setEditable(false);
+		panelForm.add(campoEquipo);
 
 		panelForm.add(new JLabel("Problema / Falla:"));
-		panelForm.add(campoFalla);          
+		panelForm.add(campoFalla);
 
-		panelForm.add(new JLabel("Diagnóstico:"));
-		panelForm.add(campoDiagnostico);       
-
-		panelForm.add(new JLabel("Servicios Realizados:"));
-		panelForm.add(campoServicios);         
+		panelForm.add(new JLabel("Servicio a realizar:"));
+		panelForm.add(comboServicios);
 
 		panelForm.add(new JLabel("Estado:")); // ✅ CORRECCIÓN 5: Faltaba este Label
-		panelForm.add(comboEstado);            
+		panelForm.add(comboEstado);
 
 		panelPrincipal.add(panelForm, BorderLayout.WEST); // El formulario se queda a la izquierda
 
 		// ── PANEL DERECHO: TABLA DE ÓRDENES ─────────────────────────────
         modelo = new DefaultTableModel(
-	            new String[]{"Orden", "Cliente", "Equipo", "Estado"}, 0) {
+	            new String[]{"Orden", "Cliente", "Equipo", "Problema", "Servicio", "Estado"}, 0) {
 	            @Override
 	            public boolean isCellEditable(int r, int c) { return false; }
 	        };
 	        tabla = new JTable(modelo);
 	        tabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	        JScrollPane scrollTabla = new JScrollPane(tabla);
-	        scrollTabla.setPreferredSize(new Dimension(480, 150));	
-	        
+	        scrollTabla.setPreferredSize(new Dimension(480, 150));
+
 		// ✅ CORRECCIÓN 6: La tabla va en el CENTER para que se expanda profesionalmente
-		panelPrincipal.add(scrollTabla, BorderLayout.CENTER); 
+		panelPrincipal.add(scrollTabla, BorderLayout.CENTER);
 
 		// ── PANEL INFERIOR: BOTONES ─────────────────────────────────────
 		JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
@@ -97,13 +95,14 @@ public class NuevaOrdenView extends JFrame {
 
 		// Cargar datos
 		cargarClientesCombo();
-		
+		cargarServiciosCombo();
+
 		comboCliente.addActionListener(e -> {
 		    Cliente seleccionado = (Cliente) comboCliente.getSelectedItem();
-		    
+
 		    if (seleccionado != null && !seleccionado.getId().isEmpty()) {
 		        Equipo equipo = EquipoModel.obtenerEquipoPorCliente(seleccionado.getId());
-		        
+
 		        if (equipo != null) {
 		            campoEquipo.setText(equipo.getMarca() + " " + equipo.getModelo());
 		            campoFalla.setText("");
@@ -116,17 +115,51 @@ public class NuevaOrdenView extends JFrame {
 		        campoFalla.setText("");
 		    }
 		});
+		btnGuardar.addActionListener(e -> agregarOrdenATabla());
 		add(panelPrincipal);
 		setLocationRelativeTo(null);
 		setVisible(true);
 	}
-	
+
 	private void cargarClientesCombo() {
 	    comboCliente.removeAllItems();
 	    comboCliente.addItem(new Cliente("", "Seleccione un cliente..."));
-	    
+
 	    for (Cliente c : dao.listar()) {
-	        comboCliente.addItem(c); 
+	        comboCliente.addItem(c);
 	    }
 	}
+
+	private void cargarServiciosCombo() {
+	    comboServicios.removeAllItems();
+	    comboServicios.addItem(new Servicio(null, "", "Seleccione un servicio...", 0.0, "Activo"));
+
+	    for (Servicio s : serviciosDao.listar()) {
+	        comboServicios.addItem(s);
+	    }
+	}
+
+	private void agregarOrdenATabla() {
+	    Cliente cliente = (Cliente) comboCliente.getSelectedItem();
+	    Servicio servicio = (Servicio) comboServicios.getSelectedItem();
+
+	    if (cliente == null || cliente.getId().isEmpty()) {
+	        JOptionPane.showMessageDialog(this, "Seleccione un cliente.");
+	        return;
+	    }
+	    if (servicio == null || servicio.getIdServicio() == null) {
+	        JOptionPane.showMessageDialog(this, "Seleccione un servicio.");
+	        return;
+	    }
+
+	    modelo.addRow(new Object[]{
+	        campoNumOrden.getText(),
+	        cliente,
+	        campoEquipo.getText(),
+	        campoFalla.getText(),
+	        servicio,
+	        comboEstado.getSelectedItem()
+	    });
+	}
+
 }
