@@ -21,7 +21,7 @@ public class OrdenListarView extends JFrame {
         setLayout(new BorderLayout());
 
         modelo = new DefaultTableModel(
-            new String[]{"ID","Código","Cliente","Equipo","Técnico","Estado",
+            new String[]{"ID","Código","Cliente","Equipo","Servicio","Estado",
                          "Costo Est.","Costo Final","F. Apertura","F. Cierre"}, 0) {
             public boolean isCellEditable(int r, int c) { return false; }
         };
@@ -49,7 +49,7 @@ public class OrdenListarView extends JFrame {
         for (OrdenServicio o : dao.listar()) {
             modelo.addRow(new Object[]{
                 o.getId(), o.getCodigo(), o.getNombreCliente(), o.getCodigoEquipo(),
-                o.getNombreTecnico(), o.getEstado(),
+                o.getNombreServicio(), o.getEstado(),
                 String.format("%.2f", o.getCostoEstimado()),
                 o.getCostoFinal() != null ? String.format("%.2f", o.getCostoFinal()) : "-",
                 o.getFechaApertura(), o.getFechaCierre()
