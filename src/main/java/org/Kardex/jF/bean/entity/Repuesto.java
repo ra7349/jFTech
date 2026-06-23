@@ -29,4 +29,11 @@ public class Repuesto {
     public void setPrecioVenta(double precioVenta) { this.precioVenta = precioVenta; }
     public String getEstado() { return estado; }
     public void setEstado(String estado) { this.estado = estado; }
+
+    @Override
+    public String toString() {
+        String codigoTexto = codigo != null ? codigo : "";
+        String nombreTexto = nombre != null ? nombre : "";
+        return (codigoTexto + " - " + nombreTexto).trim();
+    }
 }

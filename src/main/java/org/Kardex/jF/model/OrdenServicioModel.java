@@ -126,6 +126,22 @@ public class OrdenServicioModel implements CRUDUsecase<OrdenServicio> {
         return null;
     }
 
+    public List<String> listarCodigosOrden() {
+        List<String> codigos = new ArrayList<>();
+        String sql = """
+            SELECT DISTINCT numero_orden
+            FROM cliente_servicio
+            WHERE numero_orden IS NOT NULL AND TRIM(numero_orden) <> ''
+            ORDER BY numero_orden
+            """;
+        try (Connection cn = ConexionRepository.getConexion();
+             PreparedStatement ps = cn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) codigos.add(rs.getString("numero_orden"));
+        } catch (Exception e) { e.printStackTrace(); }
+        return codigos;
+    }
+
     private OrdenServicio mapear(ResultSet rs) throws Exception {
         OrdenServicio o = new OrdenServicio();
         o.setId(String.valueOf(rs.getInt("id_cliente_servicio")));
