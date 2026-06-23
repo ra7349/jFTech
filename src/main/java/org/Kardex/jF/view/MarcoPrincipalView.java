@@ -43,12 +43,10 @@ public class MarcoPrincipalView extends JFrame {
 
         JMenuItem itemInicio = construirItem("Inicio");
         JMenuItem itemCambiarContraseña = construirItem("Cambiar Contraseña");
-        JMenuItem itemConfiguracion = construirItem("Configuración");
         JMenuItem itemSalir = construirItem("Salir");
 
         menuArchivo.add(itemInicio);
         menuArchivo.add(itemCambiarContraseña);
-        menuArchivo.add(itemConfiguracion);
         menuArchivo.add(itemSalir);
 
         
@@ -89,17 +87,11 @@ public class MarcoPrincipalView extends JFrame {
         menuFacturacion.add(itemGenerarBoleta);
         menuFacturacion.add(itemHistorialVentas);
 
-        JMenu menuReportes = construirMenu("Reportes");
-        JMenuItem itemGenerarReportes   = construirItem("Generar Reportes");
-        menuReportes.add(itemGenerarReportes);
-      
-
         JMenu menuAyuda = construirMenu("Ayuda");
         JMenuItem itemAcercaDe = construirItem("Acerca del Sistema");
-        JMenuItem itemManual   = construirItem("Manual del Usuario");
         menuAyuda.add(itemAcercaDe);
         menuAyuda.addSeparator();
-        menuAyuda.add(itemManual);
+
 
         barra.add(menuArchivo);
         barra.add(menuClientes);
@@ -108,7 +100,6 @@ public class MarcoPrincipalView extends JFrame {
         barra.add(menuOrdenes);
         barra.add(menuInventario);
         barra.add(menuFacturacion);
-        barra.add(menuReportes);
         barra.add(menuAyuda);
 
         // ── Acciones (sin cambios respecto a la lógica original) ──
@@ -131,7 +122,6 @@ public class MarcoPrincipalView extends JFrame {
         itemGenerarBoleta.addActionListener(e -> new GenerarBoletaView().setVisible(true));
         itemHistorialVentas.addActionListener(e -> new HistorialVentasView().setVisible(true));
         
-        itemGenerarReportes.addActionListener(e -> new ReporteView().setVisible(true));
         
         itemAcercaDe.addActionListener(e -> JOptionPane.showMessageDialog(this,
                 "JF Technology & Services\nSistema de Soporte Técnico v1.0\n2026",
@@ -270,8 +260,6 @@ public class MarcoPrincipalView extends JFrame {
 
     private void cargarIndicadores() {
         try {
-            // TODO: sustituye estas líneas por llamadas a tus DAOs/Servicios reales, p. ej.:
-            // int equiposEnReparacion = EquipoDAO.contarPorEstado("EN_REPARACION");
             int equiposEnReparacion   = 0;
             int equiposEntregados     = 0;
             int serviciosEsteMes      = 0;
