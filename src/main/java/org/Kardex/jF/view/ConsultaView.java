@@ -1,53 +1,105 @@
 package org.Kardex.jF.view;
 
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.util.List;
+import java.util.Objects;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import javax.swing.*;
-import javax.swing.border.*;
-import java.awt.*;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
+import org.Kardex.jF.bean.entity.OrdenServicio;
+import org.Kardex.jF.model.OrdenServicioModel;
 
-public class ConsultaView extends JFrame{
+public class ConsultaView extends JFrame {
 
-	private static final long serialVersionUID = 1L;
-    private JComboBox<String> comboEstado  = new JComboBox<>(new String[]{"Estado", "Recibido", "Diagnóstico", "Reparación", "Listo", "Entregado"});
-    private JComboBox<String> comboFecha   = new JComboBox<>(new String[]{"Fecha", "Hoy", "Esta semana", "Este mes"});
-    private JComboBox<String> comboCliente = new JComboBox<>(new String[]{"Cliente", "Juan Pérez", "María López"});
-    private JButton btnBuscar = new JButton("Buscar");
+    private static final long serialVersionUID = 1L;
+    private static final String TODOS_LOS_ESTADOS = "Todos";
+    private static final String[] ESTADOS_ORDEN = {
+        TODOS_LOS_ESTADOS,
+        "RECIBIDO",
+        "EN_DIAGNOSTICO",
+        "EN_REPARACION",
+        "ESPERANDO_REPUESTO",
+        "LISTO",
+        "ENTREGADO",
+        "CANCELADO"
+    };
+
+    private final JComboBox<String> comboEstado = new JComboBox<>(ESTADOS_ORDEN);
+    private final JButton btnBuscar = new JButton("Buscar");
+    private final DefaultTableModel modelo;
+    private final OrdenServicioModel ordenServicioModel = new OrdenServicioModel();
     private JTable tabla;
+
     public ConsultaView() {
         setTitle("Consulta de Órdenes");
-        setSize(560, 380);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
- 
+        setSize(820, 420);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder(
                         BorderFactory.createEtchedBorder(), "CONSULTA",
                         TitledBorder.CENTER, TitledBorder.TOP),
                 new EmptyBorder(10, 15, 10, 15)));
- 
-        // ── Filtros ──────────────────────────────────────────────────────
+
         JPanel panelFiltros = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 5));
-        panelFiltros.add(new JLabel("Filtro:"));
+        panelFiltros.add(new JLabel("Estado:"));
         panelFiltros.add(comboEstado);
-        panelFiltros.add(comboFecha);
-        panelFiltros.add(comboCliente);
         panelFiltros.add(btnBuscar);
- 
-        // ── Tabla ────────────────────────────────────────────────────────
-        String[] columnas = {"Orden", "Cliente", "Equipo", "Estado", "Fecha"};
-        Object[][] datos = {
-            {"001", "Juan Pérez",   "Laptop HP",  "Reparación", "2025-06-01"},
-            {"002", "María López",  "PC Escritorio", "Listo",   "2025-06-10"},
-            {"003", "Carlos Ríos",  "Tablet",     "Recibido",   "2025-06-20"}
-        };
-        tabla = new JTable(datos, columnas);
+
+        modelo = new DefaultTableModel(
+                new String[]{"Orden", "Cliente", "Equipo", "Técnico", "Estado", "Fecha Apertura", "Fecha Cierre"}, 0) {
+                    private static final long serialVersionUID = 1L;
+
+                    @Override
+                    public boolean isCellEditable(int row, int column) {
+                        return false;
+                    }
+                };
+        tabla = new JTable(modelo);
         JScrollPane scrollTabla = new JScrollPane(tabla);
- 
-        panel.add(panelFiltros,  BorderLayout.NORTH);
-        panel.add(scrollTabla,   BorderLayout.CENTER);
- 
+
+        btnBuscar.addActionListener(e -> buscarPorEstado(true));
+        buscarPorEstado(false);
+
+        panel.add(panelFiltros, BorderLayout.NORTH);
+        panel.add(scrollTabla, BorderLayout.CENTER);
+
         add(panel);
         setLocationRelativeTo(null);
-        setVisible(true);
+    }
+
+    private void buscarPorEstado(boolean mostrarMensajeSinResultados) {
+        String estadoSeleccionado = Objects.toString(comboEstado.getSelectedItem(), TODOS_LOS_ESTADOS);
+        List<OrdenServicio> ordenes = ordenServicioModel.listar();
+
+        modelo.setRowCount(0);
+        for (OrdenServicio orden : ordenes) {
+            if (TODOS_LOS_ESTADOS.equals(estadoSeleccionado) || estadoSeleccionado.equals(orden.getEstado())) {
+                modelo.addRow(new Object[]{
+                    orden.getCodigo(),
+                    orden.getNombreCliente(),
+                    orden.getCodigoEquipo(),
+                    orden.getNombreTecnico(),
+                    orden.getEstado(),
+                    orden.getFechaApertura(),
+                    orden.getFechaCierre()
+                });
+            }
+        }
+
+        if (mostrarMensajeSinResultados && modelo.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this, "No se encontraron órdenes con el estado seleccionado.");
+        }
     }
 }
