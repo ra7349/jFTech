@@ -28,6 +28,8 @@ public class FormularioCliente extends JDialog {
         setLayout(new BorderLayout(0, 10));
         add(crearPanel(), BorderLayout.CENTER);
         add(crearBotones(), BorderLayout.SOUTH);
+        UiStyle.applyTo(this);
+
         asignarSiguienteCodigo();
     }
 

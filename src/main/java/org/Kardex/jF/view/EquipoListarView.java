@@ -57,6 +57,8 @@ public class EquipoListarView extends JFrame {
         panelBotones.add(btnEliminar);
         add(panelBotones, BorderLayout.SOUTH);
 
+        UiStyle.applyTo(this);
+
         btnEliminar .addActionListener(e -> eliminar());
         btnRefrescar.addActionListener(e -> cargarDatos());
         txtBuscar.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {

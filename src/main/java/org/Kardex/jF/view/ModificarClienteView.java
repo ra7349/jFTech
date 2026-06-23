@@ -28,6 +28,7 @@ public class ModificarClienteView extends JDialog {
         setLayout(new BorderLayout());
         add(crearPanel(), BorderLayout.CENTER);
         add(crearBotones(), BorderLayout.SOUTH);
+        UiStyle.applyTo(this);
     }
 
     private JPanel crearPanel() {

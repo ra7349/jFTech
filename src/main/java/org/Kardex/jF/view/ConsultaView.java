@@ -71,6 +71,7 @@ public class ConsultaView extends JFrame {
         panel.add(scrollTabla, BorderLayout.CENTER);
 
         add(panel);
+        UiStyle.applyTo(this);
         setLocationRelativeTo(null);
     }
 

@@ -35,6 +35,8 @@ public class ProductoListarView extends JFrame {
         panelBotones.add(btnEliminar);
         add(panelBotones, BorderLayout.SOUTH);
 
+        UiStyle.applyTo(this);
+
         btnEliminar .addActionListener(e -> eliminar());
         btnRefrescar.addActionListener(e -> cargarDatos());
         cargarDatos();

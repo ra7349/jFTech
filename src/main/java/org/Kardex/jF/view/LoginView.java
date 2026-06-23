@@ -39,6 +39,7 @@ public class LoginView extends JFrame {
  
         JPanel panelCentral = construirPanelCentral();
         add(panelCentral);
+        UiStyle.applyTo(this);
     }
  
     private JPanel construirPanelCentral() {

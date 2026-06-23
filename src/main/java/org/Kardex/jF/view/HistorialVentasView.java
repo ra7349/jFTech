@@ -52,6 +52,7 @@ public class HistorialVentasView extends JFrame {
         panel.add(crearPanelAcciones(), BorderLayout.SOUTH);
 
         add(panel, BorderLayout.CENTER);
+        UiStyle.applyTo(this);
         setLocationRelativeTo(null);
         cargarClientes();
         cargarVentas();

@@ -83,6 +83,7 @@ public class MovimientosView extends JFrame {
         cargarRepuestos();
         cargarMotivos();
         cargarMovimientos();
+        UiStyle.applyTo(this);
         setLocationRelativeTo(null);
     }
 

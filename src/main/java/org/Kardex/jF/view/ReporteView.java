@@ -66,6 +66,7 @@ public class ReporteView extends JFrame {
  
         add(panelInferior, BorderLayout.SOUTH);
  
+        UiStyle.applyTo(this);
         setLocationRelativeTo(null);
         setVisible(true);
     }

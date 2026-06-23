@@ -158,6 +158,7 @@ public class GestionServicioView extends JFrame{
 	        cargarDatos();
 	        asignarSiguienteCodigo();
 	        
+	        UiStyle.applyTo(this);
 	        setLocationRelativeTo(null);
 	        setVisible(true);
 	    }
