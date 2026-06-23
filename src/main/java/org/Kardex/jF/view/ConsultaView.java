@@ -58,7 +58,7 @@ public class ConsultaView extends JFrame {
         panelFiltros.add(btnBuscar);
 
         modelo = new DefaultTableModel(
-                new String[]{"Orden", "Cliente", "Equipo", "Técnico", "Estado", "Fecha Apertura", "Fecha Cierre"}, 0) {
+                new String[]{"Orden", "Cliente", "Equipo", "Servicio", "Estado", "Fecha Apertura", "Fecha Cierre"}, 0) {
                     private static final long serialVersionUID = 1L;
 
                     @Override
@@ -90,7 +90,7 @@ public class ConsultaView extends JFrame {
                     orden.getCodigo(),
                     orden.getNombreCliente(),
                     orden.getCodigoEquipo(),
-                    orden.getNombreTecnico(),
+                    orden.getNombreServicio(),
                     orden.getEstado(),
                     orden.getFechaApertura(),
                     orden.getFechaCierre()

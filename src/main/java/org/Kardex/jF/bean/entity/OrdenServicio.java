@@ -15,10 +15,13 @@ public class OrdenServicio {
     private LocalDate fechaCierre;
     private Integer   idEquipo;
     private Integer   idTecnico;
+    private Integer   idCliente;
+    private Integer   idServicio;
     // join helpers
     private String    codigoEquipo;
     private String    nombreTecnico;
     private String    nombreCliente;
+    private String    nombreServicio;
 
     public String    getId()                          { return id; }
     public void      setId(String id)                 { this.id = id; }
@@ -44,10 +47,16 @@ public class OrdenServicio {
     public void      setIdEquipo(Integer i)           { this.idEquipo = i; }
     public Integer   getIdTecnico()                   { return idTecnico; }
     public void      setIdTecnico(Integer i)          { this.idTecnico = i; }
+    public Integer   getIdCliente()                   { return idCliente; }
+    public void      setIdCliente(Integer i)          { this.idCliente = i; }
+    public Integer   getIdServicio()                  { return idServicio; }
+    public void      setIdServicio(Integer i)         { this.idServicio = i; }
     public String    getCodigoEquipo()                { return codigoEquipo; }
     public void      setCodigoEquipo(String c)        { this.codigoEquipo = c; }
     public String    getNombreTecnico()               { return nombreTecnico; }
     public void      setNombreTecnico(String n)       { this.nombreTecnico = n; }
     public String    getNombreCliente()               { return nombreCliente; }
     public void      setNombreCliente(String n)       { this.nombreCliente = n; }
+    public String    getNombreServicio()              { return nombreServicio; }
+    public void      setNombreServicio(String n)      { this.nombreServicio = n; }
 }

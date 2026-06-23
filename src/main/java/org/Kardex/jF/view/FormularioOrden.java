@@ -3,12 +3,12 @@ package org.Kardex.jF.view;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
-import org.Kardex.jF.bean.entity.Equipo;
+import org.Kardex.jF.bean.entity.Cliente;
 import org.Kardex.jF.bean.entity.OrdenServicio;
-import org.Kardex.jF.bean.entity.Tecnico;
-import org.Kardex.jF.model.EquipoModel;
+import org.Kardex.jF.bean.entity.Servicio;
+import org.Kardex.jF.model.ClienteModel;
 import org.Kardex.jF.model.OrdenServicioModel;
-import org.Kardex.jF.model.TecnicoModel;
+import org.Kardex.jF.model.ServiciosModel;
 
 public class FormularioOrden extends JDialog {
 
@@ -16,17 +16,18 @@ public class FormularioOrden extends JDialog {
 
     private JTextField txtCodigo         = new JTextField();
     private JTextArea  txtFalla          = new JTextArea(3, 20);
+    private JTextField txtEquipo         = new JTextField();
     private JTextField txtCostoEstimado  = new JTextField("0.00");
     private JComboBox<String> cbEstado   = new JComboBox<>(new String[]{
         "RECIBIDO","EN_DIAGNOSTICO","EN_REPARACION","ESPERANDO_REPUESTO","LISTO","ENTREGADO","CANCELADO"});
-    private JComboBox<String> cbEquipo;
-    private JComboBox<String> cbTecnico;
+    private JComboBox<String> cbCliente;
+    private JComboBox<String> cbServicio;
 
     private final OrdenServicioModel daoO = new OrdenServicioModel();
-    private final EquipoModel        daoE = new EquipoModel();
-    private final TecnicoModel       daoT = new TecnicoModel();
-    private List<Equipo>  equipos;
-    private List<Tecnico> tecnicos;
+    private final ClienteModel       daoC = new ClienteModel();
+    private final ServiciosModel     daoS = new ServiciosModel();
+    private List<Cliente> clientes;
+    private List<Servicio> servicios;
 
     public FormularioOrden(JFrame parent) {
         super(parent, "Nueva Orden de Servicio", true);
@@ -34,17 +35,17 @@ public class FormularioOrden extends JDialog {
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout());
 
-        equipos  = daoE.listar();
-        tecnicos = daoT.listar();
+        clientes  = daoC.listar();
+        servicios = daoS.listar();
 
-        String[] itemsEq = equipos.stream()
-            .map(e -> e.getId() + " - " + e.getCodigo() + " (" + e.getNombreCliente() + ")")
+        String[] itemsCliente = clientes.stream()
+            .map(c -> c.getId() + " - " + c.getNombre() + " " + c.getApellido())
             .toArray(String[]::new);
-        String[] itemsTec = tecnicos.stream()
-            .map(t -> t.getId() + " - " + t.getNombre() + " " + t.getApellido())
+        String[] itemsServicio = servicios.stream()
+            .map(s -> s.getIdServicio() + " - " + s.getDescripcion())
             .toArray(String[]::new);
-        cbEquipo  = new JComboBox<>(itemsEq);
-        cbTecnico = new JComboBox<>(itemsTec);
+        cbCliente  = new JComboBox<>(itemsCliente);
+        cbServicio = new JComboBox<>(itemsServicio);
 
         add(crearPanel(), BorderLayout.CENTER);
         add(crearBotones(), BorderLayout.SOUTH);
@@ -59,8 +60,9 @@ public class FormularioOrden extends JDialog {
 
         int row = 0;
         addRow(p, g, row++, "Código Orden *:", txtCodigo);
-        addRow(p, g, row++, "Equipo *:", cbEquipo);
-        addRow(p, g, row++, "Técnico:", cbTecnico);
+        addRow(p, g, row++, "Cliente *:", cbCliente);
+        addRow(p, g, row++, "Servicio *:", cbServicio);
+        addRow(p, g, row++, "Equipo:", txtEquipo);
         addRow(p, g, row++, "Estado:", cbEstado);
         addRow(p, g, row++, "Costo Estimado:", txtCostoEstimado);
 
@@ -97,23 +99,29 @@ public class FormularioOrden extends JDialog {
         if (txtCodigo.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "El código es obligatorio."); return;
         }
-        if (equipos.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "No hay equipos registrados."); return;
+        if (clientes.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No hay clientes registrados."); return;
+        }
+        if (servicios.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No hay servicios registrados."); return;
         }
         OrdenServicio o = new OrdenServicio();
         o.setCodigo(txtCodigo.getText().trim());
-        int idxEq = cbEquipo.getSelectedIndex();
-        o.setIdEquipo(Integer.parseInt(equipos.get(idxEq).getId()));
-        if (!tecnicos.isEmpty()) {
-            int idxTec = cbTecnico.getSelectedIndex();
-            o.setIdTecnico(Integer.parseInt(tecnicos.get(idxTec).getId()));
-        }
+        int idxCliente = cbCliente.getSelectedIndex();
+        int idxServicio = cbServicio.getSelectedIndex();
+        Servicio servicio = servicios.get(idxServicio);
+        o.setIdCliente(Integer.parseInt(clientes.get(idxCliente).getId()));
+        o.setIdServicio(servicio.getIdServicio());
+        o.setCodigoEquipo(txtEquipo.getText().trim());
         o.setEstado((String) cbEstado.getSelectedItem());
         o.setDescripcionFalla(txtFalla.getText().trim());
         o.setDiagnostico("");
         try {
             o.setCostoEstimado(Double.parseDouble(txtCostoEstimado.getText().trim()));
         } catch (NumberFormatException ex) { o.setCostoEstimado(0); }
+        if (txtCostoEstimado.getText().trim().equals("0.00") && servicio.getPrecio() != null) {
+            o.setCostoEstimado(servicio.getPrecio());
+        }
         o.setFechaApertura(java.time.LocalDate.now());
 
         if (daoO.insertar(o)) {
@@ -125,10 +133,10 @@ public class FormularioOrden extends JDialog {
     }
 
     private void limpiar() {
-        txtCodigo.setText(""); txtFalla.setText("");
+        txtCodigo.setText(""); txtFalla.setText(""); txtEquipo.setText("");
         txtCostoEstimado.setText("0.00"); cbEstado.setSelectedIndex(0);
-        if (cbEquipo.getItemCount()  > 0) cbEquipo.setSelectedIndex(0);
-        if (cbTecnico.getItemCount() > 0) cbTecnico.setSelectedIndex(0);
+        if (cbCliente.getItemCount()  > 0) cbCliente.setSelectedIndex(0);
+        if (cbServicio.getItemCount() > 0) cbServicio.setSelectedIndex(0);
         txtCodigo.requestFocus();
     }
 }
