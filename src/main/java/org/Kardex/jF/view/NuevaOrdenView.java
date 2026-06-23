@@ -26,7 +26,6 @@ public class NuevaOrdenView extends JFrame {
     private JComboBox<String> comboEstado  = new JComboBox<>(new String[]{"Recibido", "Reparacion", "Listo", "Entregado"});
 
     private JButton btnGuardar             = new JButton("Guardar");
-    private JButton btnAplicarServicio     = new JButton("Aplicar");
     private JButton btnActualizarEstado    = new JButton("Actualizar Estado");
 
     // ✅ MEJORA 2: Usar DefaultTableModel para poder agregar/eliminar filas dinámicamente
@@ -97,7 +96,6 @@ public class NuevaOrdenView extends JFrame {
 		// ── PANEL INFERIOR: BOTONES ─────────────────────────────────────
 		JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
 		panelBotones.add(btnActualizarEstado);
-		panelBotones.add(btnAplicarServicio);
 		panelBotones.add(btnGuardar);
 		panelPrincipal.add(panelBotones, BorderLayout.SOUTH);
 
@@ -124,9 +122,8 @@ public class NuevaOrdenView extends JFrame {
 		        campoFalla.setText("");
 		    }
 		});
-		btnAplicarServicio.addActionListener(e -> aplicarServicioCliente());
 		btnActualizarEstado.addActionListener(e -> actualizarEstadoSeleccionado());
-		btnGuardar.addActionListener(e -> agregarOrdenATabla());
+		btnGuardar.addActionListener(e -> guardarOrden());
 		add(panelPrincipal);
 		setLocationRelativeTo(null);
 		setVisible(true);
@@ -150,7 +147,7 @@ public class NuevaOrdenView extends JFrame {
 	    }
 	}
 
-	private void aplicarServicioCliente() {
+	private void guardarOrden() {
 	    Cliente cliente = (Cliente) comboCliente.getSelectedItem();
 	    Servicio servicio = (Servicio) comboServicios.getSelectedItem();
 
@@ -198,17 +195,6 @@ public class NuevaOrdenView extends JFrame {
 	    } else {
 	        JOptionPane.showMessageDialog(this, "No se pudo actualizar el estado en la base de datos.");
 	    }
-	}
-
-	private void agregarOrdenATabla() {
-	    Cliente cliente = (Cliente) comboCliente.getSelectedItem();
-	    Servicio servicio = (Servicio) comboServicios.getSelectedItem();
-
-	    if (!validarSeleccion(cliente, servicio)) {
-	        return;
-	    }
-
-	    agregarFilaTabla(cliente, servicio);
 	}
 
 	private boolean validarSeleccion(Cliente cliente, Servicio servicio) {
