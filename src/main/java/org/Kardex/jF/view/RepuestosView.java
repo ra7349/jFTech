@@ -240,7 +240,4 @@ public class RepuestosView extends JFrame {
         return valor != null ? valor.toString() : "";
     }
 
-    public static void main(String[] args) {
-        new RepuestosView().setVisible(true);
-    }
 }
