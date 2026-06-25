@@ -48,7 +48,7 @@ public class GestionServicioView extends JFrame{
 	        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	        setLayout(new BorderLayout());
 	        getContentPane().setBackground(COLOR_FONDO);
-	 
+	        this.setIconImage(new ImageIcon("image.png").getImage());
 	        // ── Panel principal con margen ──────────────────────────────────
 	        JPanel panelPrincipal = new JPanel(new BorderLayout(0, 18));
 	        panelPrincipal.setBackground(COLOR_FONDO);

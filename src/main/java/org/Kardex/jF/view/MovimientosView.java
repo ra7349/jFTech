@@ -37,7 +37,7 @@ public class MovimientosView extends JFrame {
         setTitle("Movimientos de Inventario");
         setSize(700, 520);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
+        this.setIconImage(new ImageIcon("image.png").getImage());
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder(

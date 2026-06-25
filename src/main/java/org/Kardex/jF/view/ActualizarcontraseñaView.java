@@ -22,7 +22,7 @@ public class ActualizarcontraseñaView extends JFrame {
         setTitle("Cambiar Contraseña");
         setSize(400, 260);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
- 
+        this.setIconImage(new ImageIcon("image.png").getImage());
         setLayout(new GridLayout(4, 2, 15, 20));
         ((JPanel) getContentPane()).setBorder(new EmptyBorder(20, 20, 20, 20));
  

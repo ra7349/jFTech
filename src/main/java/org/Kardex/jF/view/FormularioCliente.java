@@ -29,7 +29,7 @@ public class FormularioCliente extends JDialog {
         add(crearPanel(), BorderLayout.CENTER);
         add(crearBotones(), BorderLayout.SOUTH);
         UiStyle.applyTo(this);
-
+        this.setIconImage(new ImageIcon("image.png").getImage());
         asignarSiguienteCodigo();
     }
 

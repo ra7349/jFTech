@@ -31,7 +31,7 @@ public class MarcoPrincipalView extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         getContentPane().setBackground(COLOR_FONDO);
-
+        this.setIconImage(new ImageIcon("image.png").getImage());
         setJMenuBar(construirMenuBar());
         add(construirPanelCentro());
 
@@ -189,19 +189,19 @@ public class MarcoPrincipalView extends JFrame {
         lblVersion.setAlignmentX(Component.LEFT_ALIGNMENT);
         lblVersion.setBorder(BorderFactory.createEmptyBorder(8, 0, 0, 0));
 
-        JLabel lblImagen = new JLabel("Espacio para imagen");
+        JLabel lblImagen = new JLabel("");
         lblImagen.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         lblImagen.setForeground(COLOR_TEXTO_SUAVE);
         lblImagen.setHorizontalAlignment(SwingConstants.CENTER);
         lblImagen.setBorder(BorderFactory.createDashedBorder(COLOR_ACENTO_SUAVE, 1.4f, 8, 4, true));
-        lblImagen.setPreferredSize(new Dimension(420, 240));
-        lblImagen.setMaximumSize(new Dimension(420, 240));
+        lblImagen.setPreferredSize(new Dimension(330, 330));
+        lblImagen.setMaximumSize(new Dimension(335, 335));
         lblImagen.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         // Sección reservada para tu imagen:
         // Reemplaza el texto del JLabel anterior por un ImageIcon cuando tengas el archivo, por ejemplo:
-        // lblImagen.setText("");
-        // lblImagen.setIcon(new ImageIcon("ruta/de/tu/imagen.png"));
+        lblImagen.setText("");
+        lblImagen.setIcon(new ImageIcon("image.png"));
 
         panelPresentacion.add(lblTitulo);
         panelPresentacion.add(lblSub);

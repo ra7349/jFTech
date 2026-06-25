@@ -30,7 +30,7 @@ public class HistorialVentasView extends JFrame {
         setSize(1100, 540);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout(10, 10));
-
+        this.setIconImage(new ImageIcon("image.png").getImage());
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder(

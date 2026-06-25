@@ -35,7 +35,7 @@ public class RepuestosView extends JFrame {
         setTitle("Gestionar Repuestos");
         setSize(920, 620);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
+        this.setIconImage(new ImageIcon("image.png").getImage());
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder(

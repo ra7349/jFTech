@@ -41,7 +41,7 @@ public class NuevaOrdenView extends JFrame {
 		setTitle("Gestión de Órdenes");
 		setSize(1050, 550); // Más ancho para que la tabla de la derecha se estire en el eje X
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
+		this.setIconImage(new ImageIcon("image.png").getImage());
 		JPanel panelPrincipal = new JPanel(new BorderLayout(15, 15));
 		panelPrincipal.setBorder(new EmptyBorder(15, 15, 15, 15));
 

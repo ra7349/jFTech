@@ -19,7 +19,7 @@ public class OrdenListarView extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
-
+        this.setIconImage(new ImageIcon("image.png").getImage());
         modelo = new DefaultTableModel(
             new String[]{"ID","Código","Cliente","Equipo","Servicio","Estado",
                          "Costo Est.","Costo Final","F. Apertura","F. Cierre"}, 0) {

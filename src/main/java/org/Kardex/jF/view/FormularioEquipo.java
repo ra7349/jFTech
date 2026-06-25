@@ -31,7 +31,7 @@ public class FormularioEquipo extends JDialog {
         setLocationRelativeTo(parent);
         getContentPane().setBackground(UiStyle.BACKGROUND);
         setLayout(new BorderLayout(0, 10));
-
+        this.setIconImage(new ImageIcon("image.png").getImage());
         clientes = daoC.listar();
         String[] items = clientes.stream()
             .map(c -> c.getId() + " - " + c.getNombre() + " " + c.getApellido())

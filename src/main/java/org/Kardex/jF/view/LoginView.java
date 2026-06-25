@@ -24,7 +24,7 @@ public class LoginView extends JFrame {
     private static final Color COLOR_PRIMARIO_HOVER = new Color(30, 78, 216);
     private static final Color COLOR_TEXTO = new Color(33, 37, 41);
     private static final Color COLOR_BORDE = new Color(206, 212, 218);
- 
+    
     private JTextField userField;
     private JTextField passField;
  
@@ -39,6 +39,7 @@ public class LoginView extends JFrame {
  
         JPanel panelCentral = construirPanelCentral();
         add(panelCentral);
+        this.setIconImage(new ImageIcon("image.png").getImage());
     }
  
     private JPanel construirPanelCentral() {

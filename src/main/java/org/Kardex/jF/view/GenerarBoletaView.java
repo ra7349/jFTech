@@ -23,6 +23,7 @@ public class GenerarBoletaView extends JFrame {
     private final JTextField campoNumero = new JTextField();
     private final JTextField campoFecha = new JTextField();
     private final JComboBox<Cliente> comboCliente = new JComboBox<>();
+    private final JLabel etiquetaDniRuc = new JLabel("DNI/RUC:");
     private final JTextField campoDniRuc = new JTextField();
     private final JComboBox<String> comboComprobante = new JComboBox<>(new String[]{"Boleta", "Factura"});
     private final JComboBox<String> comboMetodoPago = new JComboBox<>(new String[]{"Efectivo", "Yape/Plin", "Tarjeta", "Transferencia"});
@@ -44,7 +45,7 @@ public class GenerarBoletaView extends JFrame {
         setSize(900, 600);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout(10, 10));
-
+        this.setIconImage(new ImageIcon("image.png").getImage());
         campoNumero.setEditable(false);
         campoFecha.setEditable(false);
         campoDniRuc.setEditable(false);
@@ -84,7 +85,7 @@ public class GenerarBoletaView extends JFrame {
         panelCliente.add(campoNumero);
         panelCliente.add(new JLabel("Fecha:"));
         panelCliente.add(campoFecha);
-        panelCliente.add(new JLabel("Cliente:"));
+        panelCliente.add(etiquetaDniRuc);
         panelCliente.add(comboCliente);
         panelCliente.add(new JLabel("DNI/RUC:"));
         panelCliente.add(campoDniRuc);
@@ -158,10 +159,12 @@ public class GenerarBoletaView extends JFrame {
         Cliente cliente = (Cliente) comboCliente.getSelectedItem();
         modeloDetalle.setRowCount(0);
         if (cliente == null || cliente.getId() == null || cliente.getId().isBlank()) {
+        	etiquetaDniRuc.setText("DNI/RUC:");
             campoDniRuc.setText("");
             actualizarTotales();
             return;
         }
+        etiquetaDniRuc.setText(esClienteEmpresa(cliente) ? "RUC:" : "DNI:");
         campoDniRuc.setText(cliente.getRUC() != null ? String.valueOf(cliente.getRUC()) : "");
         List<BoletaModel.DetallePendiente> pendientes = boletaDao.listarServiciosPendientes(Integer.parseInt(cliente.getId()));
         for (BoletaModel.DetallePendiente p : pendientes) {
@@ -169,7 +172,10 @@ public class GenerarBoletaView extends JFrame {
         }
         actualizarTotales();
     }
-
+    private boolean esClienteEmpresa(Cliente cliente) {
+        return cliente.getTipoCliente() != null && cliente.getTipoCliente().equalsIgnoreCase("Empresa");
+    }
+    
     private void agregarRepuesto() {
         Repuesto repuesto = (Repuesto) comboRepuesto.getSelectedItem();
         if (repuesto == null || repuesto.getId() == null || repuesto.getId().isBlank()) {

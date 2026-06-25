@@ -24,7 +24,7 @@ public class EquipoListarView extends JFrame {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         getContentPane().setBackground(UiStyle.BACKGROUND);
         setLayout(new BorderLayout(0, 10));
-
+        this.setIconImage(new ImageIcon("image.png").getImage());
         modelo = new DefaultTableModel(
             new String[]{"ID","Código","Marca","Modelo","Problema / Falla","Tipo","Estado","Fecha Ingreso","Cliente"}, 0) {
             public boolean isCellEditable(int r, int c) { return false; }

@@ -20,6 +20,7 @@ public class ClienteListarView extends JFrame {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         getContentPane().setBackground(UiStyle.BACKGROUND);
         setLayout(new BorderLayout(0, 10));
+        this.setIconImage(new ImageIcon("image.png").getImage());
 
         modelo = new DefaultTableModel(
             new String[]{"ID","Código","Nombre","Apellido","Teléfono","Correo","Dirección","Tipo","RUC"}, 0) {

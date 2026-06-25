@@ -5,6 +5,7 @@ import java.awt.FlowLayout;
 import java.util.List;
 import java.util.Objects;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -39,7 +40,7 @@ public class ConsultaView extends JFrame {
         setTitle("Consulta de Órdenes");
         setSize(820, 420);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
+        this.setIconImage(new ImageIcon("image.png").getImage());
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder(

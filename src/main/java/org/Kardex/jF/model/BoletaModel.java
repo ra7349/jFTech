@@ -87,8 +87,7 @@ public class BoletaModel {
     }
 
     public String generarNumeroComprobante(String tipoComprobante) {
-        String serie = "Factura".equals(tipoComprobante) ? "F001" : "B001";
-        return CodigoAutomaticoModel.generarSiguienteCodigo("boleta", "numero", serie + "-", 6);
+    	return "Factura".equals(tipoComprobante) ? "F001" : "B001";
     }
 
     public boolean guardarBoleta(String numero, String tipoComprobante, int idCliente, String dniRuc, String metodoPago,

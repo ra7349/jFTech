@@ -19,7 +19,7 @@ public class ProductoListarView extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
-
+        this.setIconImage(new ImageIcon("image.png").getImage());
         modelo = new DefaultTableModel(
             new String[]{"ID","Código","Nombre","Descripción","Precio","Stock","Categoría"}, 0) {
             public boolean isCellEditable(int r, int c) { return false; }
